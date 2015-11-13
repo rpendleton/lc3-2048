@@ -22,7 +22,7 @@ systems, but the concepts are similar for Windows.
 	```
 	$ unzip lc3tools_v12.zip
 	$ cd lc3tools
-	$ ./configure --instaldir /path/to/install/dir
+	$ ./configure --installdir /path/to/install/dir
 	$ make
 	$ make install
 	```
