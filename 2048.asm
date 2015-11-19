@@ -58,7 +58,7 @@ IS_DEAD
 
 ; global data
 	STACK		.FILL x4000
-	GAME_STATE
+;	GAME_STATE
 		DEAD	.FILL x00
 		BOARD	.FILL x01		; creates an initial game state that
 			.FILL x07		; can be used to debug game logic
@@ -665,7 +665,7 @@ DIS_FINISH
 	RET
 
 ; data
-	SYSTEM_TYPE		; first byte of clear string is either \e or \0
+;	SYSTEM_TYPE		; first byte of clear string is either \e or \0
 	CLEAR_STRING	.STRINGZ	"\e[2J\e[H\e[3J"
 	LINE_BORDER		.STRINGZ	"+--------------------------+"
 	EMPTY_BORDER	.STRINGZ	"|                          |"
