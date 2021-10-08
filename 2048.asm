@@ -39,7 +39,11 @@ MAIN
       LEA   R0, PROMPT_TYPE_MESSAGE       ; prompt for ANSI terminal
       JSR   PROMPT
       BRp   NEW
-      STI   R0, CLEAR_STRING_PTR
+
+      STI   R0, CLEAR_STRING_PTR          ; disable ANSI screen clearing
+      LD    R1, BOARD_LABELS_TBL_PTR_PTR  ; disable ANSI colors
+      LD    R2, TEXT_BOARD_LABELS_TBL_PTR
+      STR   R2, R1, #0
 
 NEW   JSR   RESET_BOARD                   ; reset the board
 LOOP  JSR   DISPLAY_BOARD                 ; display the board
@@ -79,7 +83,10 @@ IS_DEAD
                   .FILL x0B
                   .FILL x0C
 
-      CLEAR_STRING_PTR        .FILL       CLEAR_STRING
+      CLEAR_STRING_PTR             .FILL       CLEAR_STRING
+      BOARD_LABELS_TBL_PTR_PTR     .FILL       BOARD_LABELS_TBL_PTR
+      TEXT_BOARD_LABELS_TBL_PTR    .FILL       TEXT_BOARD_LABELS_TBL
+
       PROMPT_TYPE_MESSAGE     .STRINGZ    "Are you on an ANSI terminal (y/n)? "
       PROMPT_DEATH_MESSAGE    .STRINGZ    "Would you like to play again (y/n)? "
       DEATH_MESSAGE           .STRINGZ    "\nYou lost :(\n\n"
@@ -599,7 +606,7 @@ DISPLAY_BOARD
       LEA   R0, CLEAR_STRING  ; clear screen if on ANSI terminal
       PUTS
 
-      LEA   R1, BOARD_LABELS
+      LD    R1, BOARD_LABELS_TBL_PTR
       AND   R2, R2, #0
 
       LEA   R0, LINE_BORDER   ; display border
@@ -620,15 +627,12 @@ DISPLAY_NEXT_SPACE
       LD    R0, SPACE
       OUT
 
-      ADD   R3, R5, R2              ; get value at board[R2++]
+      ADD   R3, R5, R2              ; R3 = board[R2++]
       LDR   R3, R3, #0
       ADD   R2, R2, #1
 
-      ADD   R0, R3, R3              ; multiply by 5
-      ADD   R0, R0, R0
-      ADD   R0, R0, R3
-
-      ADD   R0, R0, R1              ; get the label for board[i]
+      ADD   R0, R1, R3              ; get the label from board_labels[R3]
+      LDR   R0, R0, #0
       PUTS
 
       LD    R0, SPACE
@@ -677,23 +681,8 @@ DIS_FINISH
       SPACE             .FILL x20 ; space
       NEW_LINE          .FILL x0A ; new line
 
-      BOARD_LABELS      .STRINGZ    "    "
-                        .STRINGZ    " 2  "
-                        .STRINGZ    " 4  "
-                        .STRINGZ    " 8  "
-                        .STRINGZ    " 16 "
-                        .STRINGZ    " 32 "
-                        .STRINGZ    " 64 "
-                        .STRINGZ    "128 "
-                        .STRINGZ    "256 "
-                        .STRINGZ    "512 "
-                        .STRINGZ    "1024"
-                        .STRINGZ    "2048"
-                        .STRINGZ    "4096"
-                        .STRINGZ    "8192"
-                        .STRINGZ    "2^14"
-                        .STRINGZ    "2^15"
-                        .STRINGZ    "2^16"
+      ; will be reassigned to TEXT if and when ANSI is disabled
+      BOARD_LABELS_TBL_PTR    .FILL ANSI_BOARD_LABELS_TBL
 
 ;--------------------------------------------------------------------------
 ; RAND_MOD
@@ -903,5 +892,86 @@ MULT_END
 MULT_ZERO
       AND   R0, R0, #0
       RET
+
+;--------------------------------------------------------------------------
+; DATA SEGMENT
+; Containts data that's large enough to cause issues with PC-relative offsets
+; in other areas of the program.
+;--------------------------------------------------------------------------
+
+; board label tables
+      TEXT_BOARD_LABELS_TBL   .FILL TEXT_BOARD_LABELS_0
+                              .FILL TEXT_BOARD_LABELS_1
+                              .FILL TEXT_BOARD_LABELS_2
+                              .FILL TEXT_BOARD_LABELS_3
+                              .FILL TEXT_BOARD_LABELS_4
+                              .FILL TEXT_BOARD_LABELS_5
+                              .FILL TEXT_BOARD_LABELS_6
+                              .FILL TEXT_BOARD_LABELS_7
+                              .FILL TEXT_BOARD_LABELS_8
+                              .FILL TEXT_BOARD_LABELS_9
+                              .FILL TEXT_BOARD_LABELS_10
+                              .FILL TEXT_BOARD_LABELS_11
+                              .FILL TEXT_BOARD_LABELS_12
+                              .FILL TEXT_BOARD_LABELS_13
+                              .FILL TEXT_BOARD_LABELS_14
+                              .FILL TEXT_BOARD_LABELS_15
+                              .FILL TEXT_BOARD_LABELS_16
+      
+      ANSI_BOARD_LABELS_TBL   .FILL ANSI_BOARD_LABELS_0
+                              .FILL ANSI_BOARD_LABELS_1
+                              .FILL ANSI_BOARD_LABELS_2
+                              .FILL ANSI_BOARD_LABELS_3
+                              .FILL ANSI_BOARD_LABELS_4
+                              .FILL ANSI_BOARD_LABELS_5
+                              .FILL ANSI_BOARD_LABELS_6
+                              .FILL ANSI_BOARD_LABELS_7
+                              .FILL ANSI_BOARD_LABELS_8
+                              .FILL ANSI_BOARD_LABELS_9
+                              .FILL ANSI_BOARD_LABELS_10
+                              .FILL ANSI_BOARD_LABELS_11
+                              .FILL ANSI_BOARD_LABELS_12
+                              .FILL ANSI_BOARD_LABELS_13
+                              .FILL ANSI_BOARD_LABELS_14
+                              .FILL ANSI_BOARD_LABELS_15
+                              .FILL ANSI_BOARD_LABELS_16
+
+; non-ANSI board labels
+      TEXT_BOARD_LABELS_0     .STRINGZ    "    "
+      TEXT_BOARD_LABELS_1     .STRINGZ    " 2  "
+      TEXT_BOARD_LABELS_2     .STRINGZ    " 4  "
+      TEXT_BOARD_LABELS_3     .STRINGZ    " 8  "
+      TEXT_BOARD_LABELS_4     .STRINGZ    " 16 "
+      TEXT_BOARD_LABELS_5     .STRINGZ    " 32 "
+      TEXT_BOARD_LABELS_6     .STRINGZ    " 64 "
+      TEXT_BOARD_LABELS_7     .STRINGZ    "128 "
+      TEXT_BOARD_LABELS_8     .STRINGZ    "256 "
+      TEXT_BOARD_LABELS_9     .STRINGZ    "512 "
+      TEXT_BOARD_LABELS_10    .STRINGZ    "1024"
+      TEXT_BOARD_LABELS_11    .STRINGZ    "2048"
+      TEXT_BOARD_LABELS_12    .STRINGZ    "4096"
+      TEXT_BOARD_LABELS_13    .STRINGZ    "8192"
+      TEXT_BOARD_LABELS_14    .STRINGZ    "2^14"
+      TEXT_BOARD_LABELS_15    .STRINGZ    "2^15"
+      TEXT_BOARD_LABELS_16    .STRINGZ    "2^16"
+
+; ansi board labels
+      ANSI_BOARD_LABELS_0     .STRINGZ              "    "
+      ANSI_BOARD_LABELS_1     .STRINGZ       "\e[37;m 2  \e[0m"
+      ANSI_BOARD_LABELS_2     .STRINGZ     "\e[1;37;m 4  \e[0m"
+      ANSI_BOARD_LABELS_3     .STRINGZ       "\e[31;m 8  \e[0m"
+      ANSI_BOARD_LABELS_4     .STRINGZ       "\e[31;m 16 \e[0m"
+      ANSI_BOARD_LABELS_5     .STRINGZ     "\e[1;31;m 32 \e[0m"
+      ANSI_BOARD_LABELS_6     .STRINGZ     "\e[1;31;m 64 \e[0m"
+      ANSI_BOARD_LABELS_7     .STRINGZ       "\e[33;m128 \e[0m"
+      ANSI_BOARD_LABELS_8     .STRINGZ       "\e[33;m256 \e[0m"
+      ANSI_BOARD_LABELS_9     .STRINGZ       "\e[33;m512 \e[0m"
+      ANSI_BOARD_LABELS_10    .STRINGZ     "\e[1;33;m1024\e[0m"
+      ANSI_BOARD_LABELS_11    .STRINGZ     "\e[1;33;m2048\e[0m"
+      ANSI_BOARD_LABELS_12    .STRINGZ     "\e[1;33;m4096\e[0m"
+      ANSI_BOARD_LABELS_13    .STRINGZ    "\e[37;40;m8192\e[0m"
+      ANSI_BOARD_LABELS_14    .STRINGZ    "\e[37;40;m2^14\e[0m"
+      ANSI_BOARD_LABELS_15    .STRINGZ    "\e[37;40;m2^15\e[0m"
+      ANSI_BOARD_LABELS_16    .STRINGZ    "\e[37;40;m2^16\e[0m"
 
 .END
