@@ -1,22 +1,24 @@
 ;--------------------------------------------------------------------------
 ;
-; Program: 2048.asm
-; Final Project
-; Name: Ryan Pendleton
-; Class: CS2810
-; Date: 5 Dec 2014
-; Version: 1.0
-;
-; Ethics: I declare that the following source code was written
-; solely by me. I understand that copying any source
-; code, in whole or in part, constitutes cheating,
-; and that I will receive a zero grade on this
-; project if I am found in violation of this ethic.
-;
-; X Ryan Pendleton
-;
+; Project: rpendleton/lc3-2048
 ; Description: An implementation of git.io/2048 created using LC-3.
-; License can be found in the accompanying LICENSE file.
+; Created by: Ryan Pendleton (Dec 2014)
+;
+; License: MIT (see accompanying LICENSE file)
+;
+; This program was originally written for my final project while taking CS 2810
+; (Computer Organization and Architecture) at Utah Valley University. A few
+; semesters later, my professor asked if I would be willing to make my source
+; public as a resource to future students, which led to this GitHub project.
+;
+; Since 2014, I've continued to explore LC-3 and have worked on several related
+; projects. Although the source code remains largely similar to what I submitted
+; for my final project back in 2014, I've made a few modifications to it as
+; appropriate for these other projects.
+;
+; Along those lines, since I don't use Windows anymore, I haven't tested any of
+; my recent modifications with the official LC-3 client. If you run into issues,
+; I'd recommend looking through the Git history for the original version.
 ;
 ;--------------------------------------------------------------------------
 
