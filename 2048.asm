@@ -917,7 +917,7 @@ MULT_ZERO
                               .FILL TEXT_BOARD_LABELS_14
                               .FILL TEXT_BOARD_LABELS_15
                               .FILL TEXT_BOARD_LABELS_16
-      
+
       ANSI_BOARD_LABELS_TBL   .FILL ANSI_BOARD_LABELS_0
                               .FILL ANSI_BOARD_LABELS_1
                               .FILL ANSI_BOARD_LABELS_2
